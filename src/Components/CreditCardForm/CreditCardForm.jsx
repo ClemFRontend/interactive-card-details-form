@@ -1,187 +1,260 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './CreditCardForm.css'
+import { 
+    ERROR_FORMAT_INVALID,
+    ERROR_CANT_BE_BLANK,
+    ERROR_DATE_INVALID,
+    ERROR_CVC_INVALID,
+    ERROR_NUMBERS_ONLY,
+    INPUTS,
+    REGEX_NAME_LASTNAME,
+    REGEX_CARDNUMBER,
+    REGEX_CVC,
+    REGEX_MONTH,
+    REGEX_YEAR,
+    ICON_COMPLETED
+ } from '../../const'
+import { deleteSpaceString, isEmptyObject, replaceEveryNCharacter } from '../../Utils/common'
+import { BounceAnimation } from '../../Utils/animations'
+import Button from '../Button/Button'
+import { Field, DateInputs } from '../Field/Field'
 
-const inputs = [
-    {
-        name: "cardname",
-        label: "cardholder name",
-        type: "text",
-        maxLength: 50,
-        placeholder: "e.g. Jane Appleseed",
-        required: true,
-    },
-    {
-        name: "cardnumber",
-        label: "Card number",
-        type: "tel",
-        placeholder: "e.g. 1234 5678 9123 0000",
-        errorMessage: "Wrong format, numbers only",
-        required: true,
-    },
-    {
-        name: "expirationdatemonth",
-        label: "Exp date (MM/YY)",
-        type: "tel",
-        maxLength: 2,
-        placeholder: "MM",
-        errorMessage: "Wrong format, numbers only",
-        // pattern: "[0-9]{2}",
-        required: true,
-    },
-    {
-        name: "expirationdateyear",
-        label: "",
-        type: "tel",
-        maxLength: 2,
-        placeholder: "e.g. YY",
-        errorMessage: "Wrong format, numbers only",
-        pattern: "[0-9]{2}",
-        required: true,
-    },
-    {
-        name: "cvc",
-        label: "cvc",
-        type: "tel",
-        maxLength: 3,
-        placeholder: "e.g. 123",
-        errorMessage: "Wrong format, numbers only",
-        required: true,
-        pattern: "[0-9]{3}",
-    },
-]
-
-function RectoCard() {
+function RectoCard({cardName, cardNumber, expirationDate}) {
     return (
         <div className="recto-card">
-            Hello world
+            <div className="circles">
+                <div className='plain-circle'/>
+                <div className='border-circle'/>
+            </div>
+            <h1>{cardNumber === "" ? "0000 0000 0000 0000" : cardNumber}</h1>
+            <div className='recto-card-subcontainer small-info'>
+                <p>{cardName === "" ? "Jane Appleseed" : cardName}</p>
+                <div className='recto-card-date'>
+                    <p>{expirationDate.month === "" ? "00" : expirationDate.month}/{expirationDate.year === "" ? "00" : expirationDate.year}</p>
+                </div>
+            </div>
         </div>
     )
 }
 
-function VersoCard() {
+function VersoCard({cvc}) {
     return (
-        <div className="verso-card">
-            Hello world
+        <div className="verso-card small-info">
+            <p>{cvc === "" ? "000" : cvc}</p>
         </div>
     )
 }
-
-function Button({handleClick, children}) {
-    return <button onClick={handleClick}>
-        {children}
-    </button>
-}
-
-function Field(props) {
-    const {name, label, onChange, value, errorMessage, ...inputProps} = props
-    const capsName = `${label}`.toLocaleUpperCase()
-    return (
-        <div className="input-container">
-            <label htmlFor={name}>{capsName}</label>
-            <input
-                id={name}
-                name={name}
-                onChange={onChange} 
-                value={value}
-                {...inputProps} />
-            <span className='error-msg'>{errorMessage}</span>
-        </div>
-    )
-}
-
 
 function CreditCardForm() {
 
-    const [state, setState] = useState({
+    const [infos, setInfos] = useState({
         cardName: "",
         cardNumber: "",
-        expirationDateMonth: "",
-        expirationDateYear: "",
-        cvc: ""
+        cvc: "",
     })
+
+    const [expirationDate, setExpirationDate] = useState ({
+        month: "",
+        year: "",
+    })
+
+    const [isSubmit, setIsSubmit] = useState(false)
+    const [errorMessages, setErrorMessages] = useState({})
 
     function handleInputChange(e) {
         const target = e.target
         const name = target.name
         let value = target.value
 
+        if (name === "cardNumber") {
+            value = deleteSpaceString(value)
+            value = replaceEveryNCharacter(value, 4, " ")
+        }
 
-        setState({
-            ...state,
+        setInfos({
+            ...infos,
+            [name]: value
+        })
+    }
+
+    function handleDateChange(e) {
+        const target = e.target
+        const name = target.name
+        let value = target.value
+
+        setExpirationDate({
+            ...expirationDate,
             [name]: value
         })
     }
 
     function handleSubmit(e) {
         e.preventDefault()
-        console.log(state)
+        const data = Object.assign(infos, expirationDate)
+        
+        if (handleValidaton(data)) {
+            setIsSubmit(true);
+            console.log("Form is valid !")
+        }
+        else {
+            console.log("Form is not valid.")
+        }
     }
 
-    return (
-        <main>
-            <VersoCard />
-            <RectoCard />
-            <form onSubmit={handleSubmit}>
-                <Field 
-                    key="cardname"
-                    onChange={handleInputChange}
-                    value={state['cardName']}
-                    label="Cardholder name"
-                    type="text"
-                    maxLength={50}
-                    required={true}
-                    placeholder="e.g. Jane Appleseed" />
-                <Field 
-                    key="cardnumber"
-                    onChange={handleInputChange}
-                    value={state['cardNumber']}
-                    label="Card number"
-                    type="tel"
-                    required={true}
-                    placeholder="e.g. 1234 5678 9123 0000" />
-                <div className='input-subcontainer'>
-                    <div className='input-date-container'>
-                        <Field 
-                            key="expirationdatemonth"
-                            onChange={handleInputChange}
-                            value={state['expirationDateMonth']}
-                            label="Exp date (MM/YY)"
-                            type="tel"
-                            required={true}
-                            placeholder="MM" />
-                        <Field 
-                            key="expirationdateyear"
-                            onChange={handleInputChange}
-                            value={state['expirationDateYear']}
-                            label=""
-                            type="tel"
-                            required={true}
-                            placeholder="YY" />
-                    </div>
-                    <Field 
-                            key="cvc"
-                            onChange={handleInputChange}
-                            value={state['cvc']}
-                            maxLength={3}
-                            label="cvc"
-                            type="tel"
-                            required={true}
-                            pattern="[0-9]{3}"
-                            placeholder="e.g. 123" />
-                </div>
+    function handleValidaton(data) {
+        let errors = {}
+        let formIsValid = true
+        const today = new Date()
 
-                {/* {inputs.map(input => (
-                    <Field 
-                        key={input.id}
-                        onChange={handleInputChange}
-                        value={state[input.name]}
-                        {...input} />
-                ))} */}
-                <Button>Confirm</Button>
-            </form>
-            {JSON.stringify(state)}
-        </main>
-  )
+        // Cardholder Name
+        if(!data['cardName'].match(REGEX_NAME_LASTNAME) || data['cardName'].length > 30) {
+            errors['cardName'] = ERROR_FORMAT_INVALID
+        }
+
+        // Card number
+        const cardNumber = deleteSpaceString(data['cardNumber'])
+        if(!cardNumber.match(REGEX_CARDNUMBER)) {
+            errors['cardNumber'] = ERROR_NUMBERS_ONLY
+        }
+
+        // Month
+        if(!data['month'].match(REGEX_MONTH)) {
+            errors['month'] = ERROR_DATE_INVALID
+        }
+
+        // Year
+        const inputYear = Number(data['year']) + 2000
+        if (!data['year'].match(REGEX_YEAR) || inputYear < today.getFullYear()) {
+            errors['year'] = ERROR_DATE_INVALID
+        }
+
+        // CVC
+        if(!data['cvc'].match(REGEX_CVC)) {
+            errors['cvc'] = ERROR_CVC_INVALID
+        }
+
+        // Test if field is blank
+        for (const [key, value] of Object.entries(data)) {
+            
+            const input = document.querySelector(`input[name='${key}']`)
+            input.classList.contains("invalid") && input.classList.remove("invalid") // if contains class invalid, remove her
+
+            if (!value) {
+                errors = {
+                    ...errors,
+                    [key]: ERROR_CANT_BE_BLANK
+                }
+            }
+        }
+
+        // Reject forms if there are some errors
+        if (!isEmptyObject(errors)) {
+            formIsValid = false
+
+            for (const [key] of Object.entries(errors)) {
+                document.querySelector(`input[name='${key}']`).classList.add("invalid")
+            }
+        }
+
+        setErrorMessages(errors)
+
+        return formIsValid
+    }
+
+    function resetForm() {
+        setInfos({
+            cardName: "",
+            cardNumber: "",
+            cvc: ""
+        })
+
+        setExpirationDate({
+            month: "",
+            year: ""
+        })
+    }
+
+    /**
+     * Animations
+     */
+    useEffect(() => {
+        if (infos.cardName === "" &&
+            infos.cardNumber === "" &&
+            expirationDate.month === "" &&
+            expirationDate.year === "")
+        {
+        }
+        else {
+            BounceAnimation(".recto-card")
+        }
+
+    }, [infos.cardName, infos.cardNumber, expirationDate.month, expirationDate.year])
+
+    useEffect(() => {
+        if(infos.cvc !== "") {
+            BounceAnimation(".verso-card")
+        }
+    }, [infos.cvc])
+    /* */
+
+    return (
+        <>
+            <header>
+                <div className='cards'>
+                    <VersoCard cvc={infos.cvc} />
+                    <RectoCard 
+                        expirationDate={expirationDate}
+                        cardNumber={infos.cardNumber}
+                        cardName={infos.cardName} />
+                </div>
+            </header>
+            <main>
+                {isSubmit ? 
+                <div className="confirmation-container">
+                    {ICON_COMPLETED}
+                    <h1>Thank you!</h1>
+                    <p>We've added your card details</p>
+                    <Button
+                        handleClick={() => {
+                            resetForm()
+                            setIsSubmit(false)
+                        }}
+                    >Continue</Button>
+                </div>
+                :
+                <form onSubmit={handleSubmit}>
+                    {/* Cardholder name & card number */}
+                    {INPUTS.commonInputs.map(input => (
+                        <Field 
+                            key={input.name}
+                            onChange={handleInputChange}
+                            value={infos[input.name]}
+                            errorMessage={errorMessages[input.name]}
+                            {...input} />
+                        ))}
+                    <div className='inputs-subcontainer'>
+                        {/* Date inputs */}
+                        <DateInputs
+                            inputs={INPUTS}
+                            onChange={handleDateChange}
+                            value={expirationDate}
+                            errorMsgMonth={errorMessages['month']}
+                            errorMsgYear={errorMessages['year']}
+                        />
+                        {/* CVC input */}
+                        <Field
+                            onChange={handleInputChange}
+                            value={infos.cvc}
+                            errorMessage={errorMessages['cvc']}
+                            {...INPUTS.codeInput}
+                        />
+                    </div>
+                    <Button>Confirm</Button>
+                </form>
+                }
+            </main>
+        </>
+    )
 }
 
 export default CreditCardForm

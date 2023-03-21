@@ -3,9 +3,10 @@ import CreditCardForm from './Components/CreditCardForm/CreditCardForm';
 
 function App() {
   return (
-    <div className="App">
+    <>
       <CreditCardForm />
-    </div>
+      {/* <div className='design' /> */}
+    </>
   );
 }
 
