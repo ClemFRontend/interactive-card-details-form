@@ -5,7 +5,6 @@ function App() {
   return (
     <>
       <CreditCardForm />
-      {/* <div className='design' /> */}
     </>
   );
 }

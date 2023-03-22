@@ -18,28 +18,3 @@ input:focus {
 input {
 	all: unset;
 }
-
-
-/* To delete */
-
-/* main {
-	position: absolute;
-	z-index: 2;
-} */
-
-.design {
-    /* background-image: url('./assets/desktop.jpg'); */
-    /* background-image: url('./assets/mobile.png'); */
-    /* background-image: url('./assets/complete-state-mobile.jpg'); */
-    background-image: url('./assets/complete-state-desktop.jpg');
-    background-repeat: no-repeat;
-    background-size: 100%;
-    position: absolute;
-	opacity: 0.3;
-	height: 100%;
-	width: 100%;
-	top: 0;
-	z-index: 3;
-}
-
-/*  */
