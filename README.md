@@ -53,4 +53,4 @@ This is things that was very difficult to me :
 
 ## Author
 
-- Frontend Mentor - [@vivitare](https://www.frontendmentor.io/profile/yourusername)
+- Frontend Mentor - [@vivitare](https://www.frontendmentor.io/profile/vivitare)
