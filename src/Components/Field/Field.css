@@ -29,3 +29,8 @@ span {
     color: var(--red);
     margin-top: 8px;
 }
+
+::placeholder { /* Most modern browsers support this now. */
+   color: var(--deep-violet);
+   opacity: 0.25;
+}
