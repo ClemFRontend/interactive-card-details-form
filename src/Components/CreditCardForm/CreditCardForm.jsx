@@ -18,32 +18,7 @@ import { deleteSpaceString, isEmptyObject, replaceEveryNCharacter } from '../../
 import { BounceAnimation } from '../../Utils/animations'
 import Button from '../Button/Button'
 import { Field, DateInputs } from '../Field/Field'
-
-function RectoCard({cardName, cardNumber, expirationDate}) {
-    return (
-        <div className="recto-card">
-            <div className="circles">
-                <div className='plain-circle'/>
-                <div className='border-circle'/>
-            </div>
-            <h1>{cardNumber === "" ? "0000 0000 0000 0000" : cardNumber}</h1>
-            <div className='recto-card-subcontainer small-info'>
-                <p>{cardName === "" ? "Jane Appleseed" : cardName}</p>
-                <div className='recto-card-date'>
-                    <p>{expirationDate.month === "" ? "00" : expirationDate.month}/{expirationDate.year === "" ? "00" : expirationDate.year}</p>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-function VersoCard({cvc}) {
-    return (
-        <div className="verso-card small-info">
-            <p>{cvc === "" ? "000" : cvc}</p>
-        </div>
-    )
-}
+import { RectoCard, VersoCard } from '../Cards/Cards'
 
 function CreditCardForm() {
 
@@ -94,10 +69,6 @@ function CreditCardForm() {
         
         if (handleValidaton(data)) {
             setIsSubmit(true);
-            console.log("Form is valid !")
-        }
-        else {
-            console.log("Form is not valid.")
         }
     }
 
@@ -191,8 +162,11 @@ function CreditCardForm() {
     }, [infos.cardName, infos.cardNumber, expirationDate.month, expirationDate.year])
 
     useEffect(() => {
+
         if(infos.cvc !== "") {
-            BounceAnimation(".verso-card")
+            if (window.innerWidth >= 1150) {
+                BounceAnimation(".verso-card")
+            }
         }
     }, [infos.cvc])
     /* */
