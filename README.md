@@ -1,5 +1,7 @@
 # Frontend Mentor - Interactive card details form solution
 
+![](./docs/result.jpeg)
+
 Hi everyone 👋
 
 This is a solution to the [Interactive card details form challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-card-details-form-XpS8cKZDWw) 🎉
@@ -8,7 +10,6 @@ This is a solution to the [Interactive card details form challenge on Frontend M
 
 - [Overview](#overview)
   - [The challenge](#the-challenge)
-  - [Result](#result)
   - [Links](#links)
 - [My process](#my-process)
   - [Built with](#built-with)
@@ -27,10 +28,6 @@ Users should be able to:
   - The card number, expiry date, or CVC fields are in the wrong format
 - View the optimal layout depending on their device's screen size
 - See hover, active, and focus states for interactive elements on the page
-
-### Result
-
-![](./docs/result.jpeg)
 
 ### Links
 
@@ -53,4 +50,4 @@ This is things that was very difficult to me :
 
 ## Author
 
-- Frontend Mentor - [@vivitare](https://www.frontendmentor.io/profile/vivitare)
+- Frontend Mentor - [@ClemFRontend](https://www.frontendmentor.io/profile/ClemFRontend)
